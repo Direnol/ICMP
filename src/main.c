@@ -1,6 +1,5 @@
 #include "../inc/ping.h"
 
-#define SIP "127.0.0.1"
 
 int main(int argc, char **argv)
 {
@@ -9,18 +8,20 @@ int main(int argc, char **argv)
         perror("Init socket");
         return EXIT_FAILURE;
     }
+    char sip[INET_ADDRSTRLEN] = "192.168.1.55";
+//    char dip[INET_ADDRSTRLEN] = "127.0.0.1";
+    char dip[INET_ADDRSTRLEN] = "192.168.1.3";
+
     ping_t info;
     info.id = (__be16) rand();
     info.seq = (__be16) rand();
-    if (send_ping(fd, SIP, SIP, info) <= 0) {
+    if (send_ping(fd, sip, dip, info) <= 0) {
         perror("Send ping");
         return EXIT_FAILURE;
     }
-    uint8_t buf[SIZE_PING];
+    uint8_t buf[UINT16_MAX];
 
     reply_ping(fd, info, buf);
-    struct icmphdr *icmp = (struct icmphdr *) (buf + sizeof(struct iphdr));
-    printf("reply icmp: id %d; seq %d\n", icmp->un.echo.id, icmp->un.echo.sequence);
     close(fd);
     return EXIT_SUCCESS;
 }

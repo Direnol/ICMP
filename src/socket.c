@@ -2,7 +2,7 @@
 
 int create_ip_socket(int *fd)
 {
-    *fd = socket(AF_INET, SOCK_RAW, IPPROTO_UDP);
+    *fd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
     if (*fd < 0) return EXIT_FAILURE;
     int on = 1;
     if (setsockopt(*fd, SOL_IP, IP_HDRINCL, &on, sizeof(on)) < 0) {

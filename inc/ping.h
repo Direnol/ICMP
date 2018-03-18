@@ -16,5 +16,7 @@ void set_icmp(struct icmphdr *icmp, __u8 type, __u8 code, void *data, size_t len
 
 int reply_ping(int fd, ping_t info, uint8_t *packet);
 
+void print_icmp(struct icmphdr *icmp);
+
 
 #endif //ICMP_PING_H

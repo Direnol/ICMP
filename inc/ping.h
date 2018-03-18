@@ -2,6 +2,9 @@
 #define ICMP_PING_H
 
 #include "socket.h"
+#include <sys/select.h>
+
+#define PING 0
 
 typedef struct {
     __be16 id;
@@ -9,6 +12,8 @@ typedef struct {
 } ping_t;
 
 #define SIZE_PING (sizeof(struct iphdr) + sizeof(struct icmphdr))
+
+int _send_ping(int fd, char *sip, char *dip, ping_t info, uint8_t ttl);
 
 int send_ping(int fd, char *sip, char *dip, ping_t info);
 

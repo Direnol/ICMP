@@ -56,3 +56,12 @@ uint16_t csum(const uint16_t *ptr, uint16_t nbytes)
     answer = (unsigned short) ~sum;
     return (answer);
 }
+
+char *get_ip(char *name)
+{
+    static char buf[INET_ADDRSTRLEN];
+    struct hostent *host = gethostbyname(name);
+    if (host == NULL) return NULL;
+    strcpy(buf, inet_ntoa(*( struct in_addr*)(host->h_addr_list[0])));
+    return buf;
+}

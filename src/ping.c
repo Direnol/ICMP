@@ -3,12 +3,15 @@
 
 #define S(_S) #_S
 
-int send_ping(int fd, char *sip, char *dip, ping_t info)
+int _send_ping(int fd, char *sip, char *dip, ping_t info, uint8_t ttl)
 {
     static char buf[SIZE_PING];
     struct iphdr *ip = (struct iphdr *) buf;
     struct icmphdr *icmp = (struct icmphdr *) (buf + sizeof(struct iphdr));
     set_ip_level(ip, sizeof(*icmp), inet_addr(dip), inet_addr(sip), IPPROTO_ICMP);
+    if (ttl > 0) {
+        ip->ttl = ttl;
+    }
     set_icmp(icmp, ICMP_ECHO, 0, &info, sizeof(info));
     struct sockaddr_in sock;
     memset(&sock, 0, sizeof(sock));
@@ -88,4 +91,8 @@ void print_icmp(struct icmphdr *icmp)
         }
     }
     printf("code %d; id %d; seq %d\n", icmp->code, icmp->un.echo.id, icmp->un.echo.sequence);
+}
+int send_ping(int fd, char *sip, char *dip, ping_t info)
+{
+    return _send_ping(fd, sip, dip, info, 0);
 }

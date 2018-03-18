@@ -5,6 +5,7 @@
 #include <linux/icmp.h>
 #include <arpa/inet.h>
 #include <netinet/udp.h>
+#include <netdb.h>
 #include <sys/socket.h>
 
 #include <stdio.h>
@@ -15,9 +16,13 @@
 #include <errno.h>
 #include <time.h>
 
+
 int create_ip_socket(int *fd);
 
 void set_ip_level(struct iphdr *header, uint16_t pl_size, in_addr_t to, in_addr_t from, uint8_t proto);
 
 uint16_t csum(const uint16_t *ptr, uint16_t nbytes);
+
+char *get_ip(char *name);
+
 #endif //ICMP_SOCKET_H

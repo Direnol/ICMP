@@ -25,4 +25,6 @@ uint16_t csum(const uint16_t *ptr, uint16_t nbytes);
 
 char *get_ip(char *name);
 
+char *get_name(char *ip);
+
 #endif //ICMP_SOCKET_H

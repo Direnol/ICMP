@@ -25,16 +25,8 @@ int traceroute(int fd, char *sip, char *dip)
             puts("***");
         } else {
             char *addr = inet_ntoa((struct  in_addr){ip->saddr});
-            struct in_addr addr1;
-            addr1.s_addr = ip->saddr;
-            struct hostent *host = gethostbyaddr(&addr1, sizeof(addr1), AF_INET);
-            char *name;
-            if (host) {
-                name = host->h_name;
-            } else {
-                name = "";
-            }
-            printf("%-16s %s %02d\n", addr, name, cur_ttl);
+            char *name = get_name(addr);
+            printf("%-20s %-64s %2d\n", addr, name, cur_ttl);
         }
         ++cur_ttl;
     }

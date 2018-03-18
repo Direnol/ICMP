@@ -42,7 +42,6 @@ int reply_ping(int fd, ping_t info, uint8_t *packet)
     do {
         res = recvfrom(fd, buf, UINT16_MAX, 0, &sock, &socklen);
         if (res <= 0) return EXIT_FAILURE;
-        print_icmp(icmp);
         switch (icmp->type) {
             case ICMP_ECHOREPLY: {
                 if (icmp->un.echo.id == info.id && icmp->un.echo.sequence == info.seq) get = 1;
@@ -50,7 +49,6 @@ int reply_ping(int fd, ping_t info, uint8_t *packet)
             }
             case ICMP_DEST_UNREACH: {
                 struct icmphdr *icmp_rep = (struct icmphdr *) (((char *) icmp) + sizeof(*icmp) + sizeof(struct iphdr));
-                print_icmp(icmp_rep);
                 if (icmp_rep->un.echo.id == info.id && icmp_rep->un.echo.sequence == info.seq) get = 1;
                 break;
             }
@@ -62,12 +60,13 @@ int reply_ping(int fd, ping_t info, uint8_t *packet)
             }
         }
     } while(!get);
-    memcpy(packet, buf, res);
+    memcpy(packet, buf, (size_t) res);
     return EXIT_SUCCESS;
 }
 
 void print_icmp(struct icmphdr *icmp)
 {
+    puts("Icmp reply:");
     switch (icmp->type) {
         case ICMP_ECHOREPLY: {
             puts(S(type: ICMP_ECHOREPLY));

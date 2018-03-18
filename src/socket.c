@@ -65,3 +65,14 @@ char *get_ip(char *name)
     strcpy(buf, inet_ntoa(*( struct in_addr*)(host->h_addr_list[0])));
     return buf;
 }
+
+char *get_name(char *ip)
+{
+    static char buf[64];
+    buf[0] = 0;
+    struct in_addr addr1;
+    addr1.s_addr = inet_addr(ip);
+    struct hostent *host = gethostbyaddr(&addr1, sizeof(addr1), AF_INET);
+    if (host != NULL) memcpy(buf, host->h_name, strlen(host->h_name));
+    return buf;
+}

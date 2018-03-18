@@ -13,27 +13,28 @@ int main(int argc, char **argv)
         switch (opt) {
             case 't':
                 type = TRACEROUTE;
-                puts("Traceroute");
                 break;
             case 'p':
                 type = PING;
-                puts("Ping");
                 break;
             case 's':
                 ip = get_ip(optarg);
                 memcpy(sip, ip, strlen(ip) + 1);
-                printf("Source ip %s\n", sip);
                 break;
             case 'd':
                 ip = get_ip(optarg);
                 memcpy(dip, ip, strlen(ip) + 1);
-                printf("Destination ip %s\n", dip);
                 break;
             default: // ?
                 puts("Use \"./ICMP [d dest addr] [s source addr] [p] [-t]\"");
                 return EXIT_SUCCESS;
         }
     }
+
+    if (type == PING) puts("Ping");
+    else puts("Traceroute");
+    printf("Source ip %s\n", sip);
+    printf("Destination ip %s\n", dip);
 
     int fd;
     if (create_ip_socket(&fd)) {
@@ -53,6 +54,9 @@ int main(int argc, char **argv)
             uint8_t buf[UINT16_MAX];
 
             reply_ping(fd, info, buf);
+            struct iphdr *iph = (struct iphdr *) buf;
+            struct icmphdr *icmp = (struct icmphdr *) (iph + 1);
+
             break;
         case TRACEROUTE:
             if (traceroute(fd, sip, dip)) {
